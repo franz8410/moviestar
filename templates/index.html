@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>영화 아티스트</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <style>
+            .center {
+                text-align: center;
+            }
+
+            .star-list {
+                width: 500px;
+                margin: 20px auto 0 auto;
+            }
+
+            .star-name {
+                display: inline-block;
+            }
+
+            .star-name:hover {
+                text-decoration: underline;
+            }
+
+            .card {
+                margin-bottom: 15px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                showStar();
+            });
+
+            function showStar() {
+                $('#star-box').empty()
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/list',
+                    data: {},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            let movieStars = response['msg'];
+                            let movieStarsLength = movieStars.length;
+                            for (let index = 0; index < movieStarsLength; index++) {
+                                let name = movieStars[index]['name'];
+                                let url = movieStars[index]['url'];
+                                let imgUrl = movieStars[index]['img_url'];
+                                let recentWork = movieStars[index]['recent'];
+                                let like = movieStars[index]['like'];
+                                let rank = index + 1 ;
+                                let movieStarCard = `<div class="card">
+                                    <div class="card-content">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <figure class="image is-48x48">
+                                                    <img
+                                                            src="${imgUrl}"
+                                                            alt="Placeholder image"
+                                                    />
+                                                </figure>
+                                            </div>
+                                            <div class="media-content">
+                                                <a href="${url}" target="_blank" class="star-name title is-4">${name} (좋아요: ${like} / 순위 : ${rank})</a>
+                                                <p class="subtitle is-6">${recentWork}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <footer class="card-footer">
+                                        <a href="#" onclick="likeStar('${name}')" class="card-footer-item has-text-info">
+                                            좋아요
+                                            <span class="icon">
+                                               <i class="fas fa-thumbs-up"></i>
+                                            </span>
+                                        </a>
+                                        <a href="#" onclick="notLikeStar('${name}')" class="card-footer-item has-text-grey">
+                                            안 좋아요
+                                            <span class="icon">
+                                               <i class="fas fa-thumbs-down"></i>
+                                            </span>
+                                        </a>
+                                        <a href="#" onclick="deleteStar('${name}')" class="card-footer-item has-text-danger">
+                                            삭제
+                                            <span class="icon">
+                                                 <i class="fas fa-ban"></i>
+                                            </span>
+                                        </a>
+                                    </footer>
+                                </div>`;
+                                $('#star-box').append(movieStarCard);
+                            }
+
+                        }
+                    }
+                });
+            }
+
+            function likeStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/like',
+                    data: {'name': name},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('좋아요 완료!')
+                            window.location.reload()
+                        }
+                    }
+                });
+            }
+
+            function notLikeStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/notlike',
+                    data: {'name': name},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('안 좋아요 완료!')
+                            window.location.reload()
+                        }
+                    }
+                });
+            }
+
+            function deleteStar(name) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/delete',
+                    data: {'name': name},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('삭제 완료!')
+                            window.location.reload()
+                        }
+                    }
+                });
+            }
+
+        </script>
+    </head>
+    <body>
+        <section class="hero is-warning">
+            <div class="hero-body">
+                <div class="container center">
+                    <h1 class="title">
+                        마이 아티스트 😆
+                    </h1>
+                    <h2 class="subtitle">
+                        순위를 매겨봅시다
+                    </h2>
+                </div>
+            </div>
+        </section>
+        <div class="star-list" id="star-box">
+        </div>
+    </body>
+</html>
