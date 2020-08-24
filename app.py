@@ -48,7 +48,7 @@ def delete_star():
     return jsonify({'result': 'success'})
 
 @app.route('/webhook', methods=['POST'])
-def web_hook();
+def web_hook():
     web_hook_data = request.form
     print(web_hook_data)
     os.system('cd /hmoe/ubuntu/moviestar && git pull')
