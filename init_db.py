@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://franz8410:test@3.34.48.67/', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
 db = client.dbmovie
 
 

@@ -1,10 +1,12 @@
+import os
+
 from pymongo import MongoClient
 
 from flask import Flask, render_template, jsonify, request
 
 app = Flask(__name__)
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://franz8410:test@3.34.48.67/', 27017)  # mongoDB는 27017 포트로 돌아갑니다.
 db = client.dbmovie
 
 
@@ -45,6 +47,16 @@ def delete_star():
     db.mystar.delete_one({'name': star_name})
     return jsonify({'result': 'success'})
 
+
+@app.route('/webhook', methods=['POST'])
+def web_hook():
+    web_hook_data = request.form
+    print(web_hook_data)
+    os.system('cd /home/ubuntu/moviestar && git pull')
+    return jsonify({'result': 'success'})
+
+
+# push 테스트용
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
