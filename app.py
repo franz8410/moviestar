@@ -53,7 +53,7 @@ def web_hook():
     web_hook_data = request.form
     print(web_hook_data)
     os.system('cd /home/ubuntu/moviestar && git pull')
-    return jsonify({'result': 'success!!'})
+    return jsonify({'result': 'success'})
 
 
 # push 테스트용
